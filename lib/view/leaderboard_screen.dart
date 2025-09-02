@@ -867,9 +867,9 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
       builder: (context, constraints) {
         // Pastikan minimal height tertentu
         final maxHeight = constraints.maxHeight;
-        final podiumHeight1 = maxHeight * 0.8; // 80% dari tinggi tersedia
-        final podiumHeight2 = maxHeight * 0.7; // 70% dari tinggi tersedia
-        final podiumHeight3 = maxHeight * 0.6; // 60% dari tinggi tersedia
+        final podiumHeight1 = maxHeight * 0.75; // 80% dari tinggi tersedia
+        final podiumHeight2 = maxHeight * 0.65; // 70% dari tinggi tersedia
+        final podiumHeight3 = maxHeight * 0.55; // 60% dari tinggi tersedia
         return SizedBox(
           height: maxHeight,
           child: Column(
