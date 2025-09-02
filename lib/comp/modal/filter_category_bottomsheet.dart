@@ -1,14 +1,10 @@
 // widgets/sport_bottom_sheet.dart
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:test_case_ayo/comp/button/primary_button.dart';
 import 'package:test_case_ayo/comp/separator.dart';
-import 'package:test_case_ayo/data/leaderboard_cubit.dart';
-import 'package:test_case_ayo/model/data_dummy.dart';
 import 'package:test_case_ayo/model/leaderboard_model.dart';
 
 // widgets/filter_bottom_sheet.dart
-import 'package:flutter/material.dart';
 import 'package:test_case_ayo/utils/constant.dart';
 
 class FilterCategoryBottomSheet extends StatefulWidget {
@@ -63,9 +59,9 @@ class _FilterCategoryBottomSheetState extends State<FilterCategoryBottomSheet> {
           topRight: Radius.circular(20),
         ),
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      child: ListView(
+        shrinkWrap: true, // ← PENTING: shrinkWrap true
+        physics: const ClampingScrollPhysics(),
         children: [
           // Header
           Row(
@@ -97,48 +93,41 @@ class _FilterCategoryBottomSheetState extends State<FilterCategoryBottomSheet> {
                   fontWeight: FontUI.WEIGHT_REGULAR,
                 ),
               ),
-              ListView.builder(
-                shrinkWrap: true,
-                itemCount: individuOptions.length,
-                itemBuilder: (context, index) {
-                  final option = individuOptions[index];
+              Padding(
+                padding: const EdgeInsets.only(left: 16, right: 16),
+                child: Column(
+                  children: individuOptions.map((e) {
+                    return _buildIndividuItem(context, e);
+                  }).toList(),
+                ),
+              ),
+              Column(
+                children: komunitasOptions.map((e) {
                   return Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: _buildIndividuItem(context, option),
+                    padding: const EdgeInsets.only(right: 16),
+                    child: _buildKomunitasItem(context, e),
                   );
+                }).toList(),
+              ),
+              // Apply Button
+              const SizedBox(height: 16),
+              PrimaryButton(
+                text: "Terapkan",
+                onPressed: () {
+                  // Cari option yang sesuai dengan _radioSelected
+                  final selectedOption = widget.options.firstWhere(
+                    (opt) => opt.id == _radioSelected,
+                    orElse: () => widget.options.first,
+                  );
+
+                  // Panggil callback dengan option yang dipilih
+                  widget.onSelected(selectedOption);
+
+                  // Tutup bottom sheet
+                  Navigator.pop(context);
                 },
               ),
             ],
-          ),
-          ListView.builder(
-            shrinkWrap: true,
-            itemCount: komunitasOptions.length,
-            itemBuilder: (context, index) {
-              final option = komunitasOptions[index];
-              return Container(
-                padding: const EdgeInsets.only(right: 16),
-                child: _buildKomunitasItem(context, option),
-              );
-            },
-          ),
-
-          // Apply Button
-          const SizedBox(height: 16),
-          PrimaryButton(
-            text: "Terapkan",
-            onPressed: () {
-              // Cari option yang sesuai dengan _radioSelected
-              final selectedOption = widget.options.firstWhere(
-                (opt) => opt.id == _radioSelected,
-                orElse: () => widget.options.first,
-              );
-
-              // Panggil callback dengan option yang dipilih
-              widget.onSelected(selectedOption);
-
-              // Tutup bottom sheet
-              Navigator.pop(context);
-            },
           ),
         ],
       ),

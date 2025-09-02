@@ -65,9 +65,9 @@ class _FilterCaborBottomSheetState extends State<FilterCaborBottomSheet> {
           topRight: Radius.circular(20),
         ),
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      child: ListView(
+        shrinkWrap: true, // ← PENTING: shrinkWrap true
+        physics: const ClampingScrollPhysics(),
         children: [
           // Header
           Row(
@@ -88,70 +88,66 @@ class _FilterCaborBottomSheetState extends State<FilterCaborBottomSheet> {
           const SizedBox(height: 24),
 
           // Preferensi Section - Hanya menampilkan yang isPreferred = true
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 6,
-                    horizontal: 12,
-                  ),
-                  decoration: BoxDecoration(
-                    color: ColorUI.TEXT_INK0,
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: Text(
-                    "Preferensi Olahragamu",
-                    style: TextStyleUI.SUBTITLE2.copyWith(
-                      fontWeight: FontUI.WEIGHT_REGULAR,
-                    ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 6,
+                  horizontal: 12,
+                ),
+                decoration: BoxDecoration(
+                  color: ColorUI.TEXT_INK0,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Text(
+                  "Preferensi Olahragamu",
+                  style: TextStyleUI.SUBTITLE2.copyWith(
+                    fontWeight: FontUI.WEIGHT_REGULAR,
                   ),
                 ),
-                ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: preferredOptions.length,
-                  itemBuilder: (context, index) {
-                    final option = preferredOptions[index];
-                    return _buildPreferensiItem(context, option);
-                  },
-                ),
-              ],
-            ),
+              ),
+              ListView.builder(
+                shrinkWrap: true,
+                itemCount: preferredOptions.length,
+                itemBuilder: (context, index) {
+                  final option = preferredOptions[index];
+                  return _buildPreferensiItem(context, option);
+                },
+              ),
+            ],
           ),
 
           const SizedBox(height: 16),
 
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 6,
-                    horizontal: 12,
-                  ),
-                  decoration: BoxDecoration(
-                    color: ColorUI.TEXT_INK0,
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: Text(
-                    "Semua Olahraga",
-                    style: TextStyleUI.SUBTITLE2.copyWith(
-                      fontWeight: FontUI.WEIGHT_REGULAR,
-                    ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 6,
+                  horizontal: 12,
+                ),
+                decoration: BoxDecoration(
+                  color: ColorUI.TEXT_INK0,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Text(
+                  "Semua Olahraga",
+                  style: TextStyleUI.SUBTITLE2.copyWith(
+                    fontWeight: FontUI.WEIGHT_REGULAR,
                   ),
                 ),
-                ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: allOptions.length,
-                  itemBuilder: (context, index) {
-                    final option = allOptions[index];
-                    return _buildAllCategorySportItem(context, option);
-                  },
-                ),
-              ],
-            ),
+              ),
+              ListView.builder(
+                shrinkWrap: true,
+                itemCount: allOptions.length,
+                itemBuilder: (context, index) {
+                  final option = allOptions[index];
+                  return _buildAllCategorySportItem(context, option);
+                },
+              ),
+            ],
           ),
 
           // Apply Button

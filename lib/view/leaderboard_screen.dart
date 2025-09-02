@@ -321,7 +321,11 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
               // Podium section - hanya tampilkan jika ada data
               if (topThree.isNotEmpty) ...[
                 const SizedBox(height: 20),
-                _buildPodiumSection(topThree, state.currentCategory),
+                Expanded(
+                  // Gunakan Expanded untuk mengambil sisa space
+                  flex: 2, // Adjust flex factor sesuai kebutuhan
+                  child: _buildPodiumSection(topThree, state.currentCategory),
+                ),
               ] else ...[
                 // Tampilkan placeholder jika tidak ada podium
                 const SizedBox(height: 40),
@@ -870,57 +874,70 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
     List<LeaderboardItem> topThree,
     String currentCategory,
   ) {
-    final screenHeight = MediaQuery.of(context).size.height;
+    // final screenHeight = MediaQuery.of(context).size.height;
 
-    // Base height dengan minimum value
-    final baseHeight = max(screenHeight * 0.15, 80.0);
+    // // Base height dengan minimum value
+    // final baseHeight = max(screenHeight * 0.15, 80.0);
 
-    final podiumHeight1 = baseHeight * 1.4; // Juara 1
-    final podiumHeight2 = baseHeight * 1.1; // Juara 2
-    final podiumHeight3 = baseHeight; // Juara 3
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            // Juara 2 (jika ada)
-            if (topThree.length >= 2)
-              Expanded(
-                child: _buildPodium(
-                  topThree[1],
-                  podiumHeight2,
-                  false,
-                  currentCategory,
-                ),
+    // final podiumHeight1 = baseHeight * 3.0; // Juara 1
+    // final podiumHeight2 = baseHeight * 2.5; // Juara 2
+    // final podiumHeight3 = baseHeight * 2.4; // Juara 3
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Pastikan minimal height tertentu
+        final availableHeight = max(constraints.maxHeight, 150.0);
+
+        final podiumHeight1 = availableHeight * 0.7;
+        final podiumHeight2 = availableHeight * 0.6;
+        final podiumHeight3 = availableHeight * 0.5;
+        return Container(
+          height: availableHeight,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  // Juara 2 (jika ada)
+                  if (topThree.length >= 2)
+                    Expanded(
+                      child: _buildPodium(
+                        topThree[1],
+                        podiumHeight2,
+                        false,
+                        currentCategory,
+                      ),
+                    ),
+
+                  // Juara 1 (jika ada)
+                  if (topThree.isNotEmpty)
+                    Expanded(
+                      child: _buildPodium(
+                        topThree[0],
+                        podiumHeight1,
+                        true,
+                        currentCategory,
+                      ),
+                    ),
+
+                  // Juara 3 (jika ada)
+                  if (topThree.length >= 3)
+                    Expanded(
+                      child: _buildPodium(
+                        topThree[2],
+                        podiumHeight3,
+                        false,
+                        currentCategory,
+                      ),
+                    ),
+                ],
               ),
-
-            // Juara 1 (jika ada)
-            if (topThree.isNotEmpty)
-              Expanded(
-                child: _buildPodium(
-                  topThree[0],
-                  podiumHeight1,
-                  true,
-                  currentCategory,
-                ),
-              ),
-
-            // Juara 3 (jika ada)
-            if (topThree.length >= 3)
-              Expanded(
-                child: _buildPodium(
-                  topThree[2],
-                  podiumHeight3,
-                  false,
-                  currentCategory,
-                ),
-              ),
-          ],
-        ),
-      ],
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -1123,19 +1140,19 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
 
         // Podium
         Container(
-          alignment: Alignment.center,
+          alignment: Alignment.topCenter,
           width: 70,
           height: height,
           decoration: BoxDecoration(
-            color: Colors.deepPurple.shade700,
+            color: ColorUI.PRIMARY_DARK,
             borderRadius: BorderRadius.circular(12),
           ),
           child: Text(
             item.rank.toString(),
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 26,
-              fontWeight: FontWeight.bold,
+            style: TextStyleUI.SUBTITLE1.copyWith(
+              fontSize: 45,
+              color: ColorUI.WHITE,
+              fontWeight: FontUI.WEIGHT_SEMI_BOLD,
             ),
           ),
         ),

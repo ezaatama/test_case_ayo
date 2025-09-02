@@ -13,9 +13,9 @@ void showPointRulesModal(BuildContext context) {
     builder: (context) {
       return Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: ListView(
+          shrinkWrap: true, // ← PENTING: shrinkWrap true
+          physics: const ClampingScrollPhysics(),
           children: [
             // Header
             Row(

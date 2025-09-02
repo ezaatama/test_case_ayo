@@ -51,9 +51,9 @@ class _FilterPeriodeBottomSheetState extends State<FilterPeriodeBottomSheet> {
           topRight: Radius.circular(20),
         ),
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      child: ListView(
+        shrinkWrap: true, // ← PENTING: shrinkWrap true
+        physics: const ClampingScrollPhysics(),
         children: [
           // Header
           Row(

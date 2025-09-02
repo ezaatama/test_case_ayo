@@ -75,9 +75,9 @@ class _FilterLocationBottomSheetState extends State<FilterLocationBottomSheet> {
           topRight: Radius.circular(20),
         ),
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      child: ListView(
+        shrinkWrap: true, // ← PENTING: shrinkWrap true
+        physics: const ClampingScrollPhysics(),
         children: [
           // Header
           Row(
@@ -115,53 +115,50 @@ class _FilterLocationBottomSheetState extends State<FilterLocationBottomSheet> {
           const SizedBox(height: 16),
 
           // Preferensi Section - Hanya menampilkan yang isPreferred = true
-          Expanded(
-            child: SingleChildScrollView(
-              child: Wrap(
-                spacing: 8.0, // Spasi horizontal antara item
-                runSpacing: 8.0, // Spasi vertikal antara baris
-                children: _filteredOptions.map((option) {
-                  final isSelected = _selectedId == option.id;
+          SingleChildScrollView(
+            child: Wrap(
+              spacing: 8.0, // Spasi horizontal antara item
+              runSpacing: 8.0, // Spasi vertikal antara baris
+              children: _filteredOptions.map((option) {
+                final isSelected = _selectedId == option.id;
 
-                  return FilterChip(
-                    label: Text(
-                      option.name,
-                      style: TextStyleUI.BODY2.copyWith(
-                        color: isSelected
-                            ? ColorUI.PRIMARY
-                            : ColorUI.TEXT_INK80,
-                        fontWeight: FontUI.WEIGHT_REGULAR,
-                      ),
+                return FilterChip(
+                  label: Text(
+                    option.name,
+                    style: TextStyleUI.BODY2.copyWith(
+                      color: isSelected ? ColorUI.PRIMARY : ColorUI.TEXT_INK80,
+                      fontWeight: FontUI.WEIGHT_REGULAR,
                     ),
-                    showCheckmark: false,
-                    selected: isSelected,
-                    selectedColor: ColorUI.FILL_CHIP,
-                    labelStyle: TextStyle(
-                      color: isSelected ? ColorUI.PRIMARY : ColorUI.BLACK,
-                      fontWeight: isSelected
-                          ? FontWeight.bold
-                          : FontWeight.normal,
+                  ),
+                  showCheckmark: false,
+                  selected: isSelected,
+                  selectedColor: ColorUI.FILL_CHIP,
+                  labelStyle: TextStyle(
+                    color: isSelected ? ColorUI.PRIMARY : ColorUI.BLACK,
+                    fontWeight: isSelected
+                        ? FontWeight.bold
+                        : FontWeight.normal,
+                  ),
+                  onSelected: (selected) {
+                    setState(() {
+                      _selectedId = option.id;
+                      _selectedName = option.name;
+                    });
+                  },
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                    side: BorderSide(
+                      color: isSelected
+                          ? Colors.transparent
+                          : Colors.grey.shade300,
+                      width: isSelected ? 1.5 : 1.0,
                     ),
-                    onSelected: (selected) {
-                      setState(() {
-                        _selectedId = option.id;
-                        _selectedName = option.name;
-                      });
-                    },
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                      side: BorderSide(
-                        color: isSelected
-                            ? Colors.transparent
-                            : Colors.grey.shade300,
-                        width: isSelected ? 1.5 : 1.0,
-                      ),
-                    ),
-                  );
-                }).toList(),
-              ),
+                  ),
+                );
+              }).toList(),
             ),
           ),
+
           // Apply Button
           const SizedBox(height: 16),
           PrimaryButton(
