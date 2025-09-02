@@ -42,6 +42,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
   }
 
   void _handleScroll() {
+    debugPrint("position pixel -> ${_scrollController.position.pixels}");
     // Jika scroll position di paling atas, tunjukkan semua data termasuk top 3
     if (_scrollController.position.pixels == 0) {
       if (!_isAtTop) {
@@ -50,17 +51,11 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
           _showFullList = true;
         });
       }
-    } else if (_scrollController.position.pixels > 50) {
+    } else if (_scrollController.position.pixels > 150) {
       if (_isAtTop) {
         setState(() {
           _isAtTop = false;
           _showFullList = false;
-        });
-        // Scroll ke posisi dimana rank 4 mulai (setelah top 3)
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (_scrollController.hasClients) {
-            _scrollController.jumpTo(0);
-          }
         });
       }
     }
@@ -242,13 +237,6 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
   }
 
   Widget _buildBody(BuildContext context, LeaderboardLoaded state) {
-    // Urutkan semua data berdasarkan rank
-    // final allUsers = List<LeaderboardItem>.from(state.leaderboard)
-    //   ..sort((a, b) => a.rank.compareTo(b.rank));
-
-    // // Ambil top 3 untuk podium
-    // final topThree = allUsers.where((item) => item.rank <= 3).toList();
-
     final allUsers = List<LeaderboardItem>.from(state.leaderboard)
       ..sort((a, b) => a.rank.compareTo(b.rank));
 
@@ -361,10 +349,11 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                 setState(() {
                   _showFullList = false;
                 });
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  if (_scrollController.hasClients) {
-                    _scrollController.jumpTo(0);
-                  }
+              } else if (scrollNotification.scrollDelta! < 0 &&
+                  !_showFullList &&
+                  scrollController.position.pixels == 0) {
+                setState(() {
+                  _showFullList = true;
                 });
               }
             }
@@ -877,54 +866,55 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
     return LayoutBuilder(
       builder: (context, constraints) {
         // Pastikan minimal height tertentu
-        final availableHeight = max(constraints.maxHeight, 150.0);
-
-        final podiumHeight1 = availableHeight * 1.0;
-        final podiumHeight2 = availableHeight * 0.90;
-        final podiumHeight3 = availableHeight * 0.85;
-        return Container(
-          height: availableHeight,
+        final maxHeight = constraints.maxHeight;
+        final podiumHeight1 = maxHeight * 0.8; // 80% dari tinggi tersedia
+        final podiumHeight2 = maxHeight * 0.7; // 70% dari tinggi tersedia
+        final podiumHeight3 = maxHeight * 0.6; // 60% dari tinggi tersedia
+        return SizedBox(
+          height: maxHeight,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  // Juara 2 (jika ada)
-                  if (topThree.length >= 2)
-                    Expanded(
-                      child: _buildPodium(
-                        topThree[1],
-                        podiumHeight2,
-                        false,
-                        currentCategory,
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    // Juara 2 (jika ada)
+                    if (topThree.length >= 2)
+                      Expanded(
+                        child: _buildPodium(
+                          topThree[1],
+                          podiumHeight2,
+                          false,
+                          currentCategory,
+                        ),
                       ),
-                    ),
 
-                  // Juara 1 (jika ada)
-                  if (topThree.isNotEmpty)
-                    Expanded(
-                      child: _buildPodium(
-                        topThree[0],
-                        podiumHeight1,
-                        true,
-                        currentCategory,
+                    // Juara 1 (jika ada)
+                    if (topThree.isNotEmpty)
+                      Expanded(
+                        child: _buildPodium(
+                          topThree[0],
+                          podiumHeight1,
+                          true,
+                          currentCategory,
+                        ),
                       ),
-                    ),
 
-                  // Juara 3 (jika ada)
-                  if (topThree.length >= 3)
-                    Expanded(
-                      child: _buildPodium(
-                        topThree[2],
-                        podiumHeight3,
-                        false,
-                        currentCategory,
+                    // Juara 3 (jika ada)
+                    if (topThree.length >= 3)
+                      Expanded(
+                        child: _buildPodium(
+                          topThree[2],
+                          podiumHeight3,
+                          false,
+                          currentCategory,
+                        ),
                       ),
-                    ),
-                ],
+                  ],
+                ),
               ),
             ],
           ),
