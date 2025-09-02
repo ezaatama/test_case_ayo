@@ -352,7 +352,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
       controller: _draggableController,
       initialChildSize: 0.25, // Tinggi awal 25% dari layar
       minChildSize: 0.25, // Tinggi minimum 25% dari layar
-      maxChildSize: 0.7, // Tinggi maksimum 80% dari layar
+      maxChildSize: 0.75, // Tinggi maksimum 80% dari layar
       builder: (context, scrollController) {
         return NotificationListener<ScrollNotification>(
           onNotification: (scrollNotification) {
@@ -874,22 +874,14 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
     List<LeaderboardItem> topThree,
     String currentCategory,
   ) {
-    // final screenHeight = MediaQuery.of(context).size.height;
-
-    // // Base height dengan minimum value
-    // final baseHeight = max(screenHeight * 0.15, 80.0);
-
-    // final podiumHeight1 = baseHeight * 3.0; // Juara 1
-    // final podiumHeight2 = baseHeight * 2.5; // Juara 2
-    // final podiumHeight3 = baseHeight * 2.4; // Juara 3
     return LayoutBuilder(
       builder: (context, constraints) {
         // Pastikan minimal height tertentu
         final availableHeight = max(constraints.maxHeight, 150.0);
 
-        final podiumHeight1 = availableHeight * 0.7;
-        final podiumHeight2 = availableHeight * 0.6;
-        final podiumHeight3 = availableHeight * 0.5;
+        final podiumHeight1 = availableHeight * 1.0;
+        final podiumHeight2 = availableHeight * 0.90;
+        final podiumHeight3 = availableHeight * 0.85;
         return Container(
           height: availableHeight,
           child: Column(
